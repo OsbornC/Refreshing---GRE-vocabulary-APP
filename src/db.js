@@ -17,6 +17,6 @@ const Vocabulary = new mongoose.Schema({
 const Modules = new mongoose.Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref:'User'},
   name: {type: String, required: true},
-  portion: {type: Number, required: true, default: 0},
+  portion: {type: Number, required: true, default: 0, min: 0, max: 1},
   vocabulary: [Vocabulary]
 });

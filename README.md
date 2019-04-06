@@ -40,7 +40,7 @@ An Example Modules with embedded Vocabulary:
 
 ```javascript
 {
-  portion: 50%, // the portion of times of recognizing words correctly during the test (the best one)
+  portion: 0.5, // the portion of times of recognizing words correctly during the test (the best one)
   user: // a reference to a User object
   name: "Module 1",
   vocabulary: [
