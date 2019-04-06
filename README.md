@@ -64,7 +64,6 @@ An Example Modules with embedded Vocabulary:
 
 ## [Link to Commented First Draft Schema](src/db.js) 
 
-(___TODO__: create a first draft of your Schemas in db.js and link to it_)
 
 ## Wireframes
 
@@ -94,11 +93,7 @@ An Example Modules with embedded Vocabulary:
 
 ![list](documentation/6.jpg)
 
-## Site map
-
-(___TODO__: draw out a site map that shows how pages are related to each other_)
-
-Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia/commons/2/20/Sitemap_google.jpg), but you can create one without the screenshots, drop shadows, etc. ... just names of pages and where they flow to.
+## [Site map](documentation/7.jpg)
 
 ## User Stories or Use Cases
 
