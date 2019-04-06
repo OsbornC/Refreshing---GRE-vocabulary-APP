@@ -1,23 +1,15 @@
-The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
-
-(___TODO__: your project name_)
-
-# Shoppy Shoperson 
+# Refreshing GRE Flash Cards
 
 ## Overview
 
-(___TODO__: a brief one or two paragraph, high-level description of your project_)
 
-Remembering what to buy at the grocery store is waaaaay too difficult. Also, shopping for groceries when you're hungry leads to regrettable purchases. Sooo... that's where Shoppy Shoperson comes in!
+Remembering the GRE vocabulary is waaaaay too difficult, especially for people who use English as a second language. Also, bringing a vocabulary book everywhere is tiresome. Sooo... that's where Refreshing GRE Flash Cards comes in!
 
-Shoppy Shoperson is a web app that will allow users to keep track of multiple grocery lists. Users can register and login. Once they're logged in, they can create or view their grocery list. For every list that they have, they can add items to the list or cross off items.
-
+Refreshing GRE Flash Cards is a web app that will allow users to learn GRE vocabulary and take quizzes. Users can register and login. Once they're logged in, they can learn the vocabulary by category. They can take tests on different word lists and see their scores. The words that they do not recognize during the tests will be put in the notes so that they can learn those words from time to time. Once they get full marks for a module test, the progress bar will be updated. Users can also use this web app as a dictionary by looking up words that they do not know on this app. They can also see how many words they still have to remember. In addition, they can add words to this vocabulary if they want.
 
 ## Data Model
 
-(___TODO__: a description of your application's data and their relationships to each other_) 
-
-The application will store Users, Lists and Items
+The application will store Users, Vocabulary and Modules
 
 * users can have multiple lists (via references)
 * each list can have multiple items (by embedding)
@@ -28,23 +20,44 @@ An Example User:
 
 ```javascript
 {
-  username: "shannonshopper",
-  hash: // a password hash,
-  lists: // an array of references to List documents
+  user: "Osborn",
+  password: // a password hash,
+  lists: // an array of references to Modules documents
 }
 ```
 
-An Example List with Embedded Items:
+An Example Vocabulary:
 
 ```javascript
 {
+  word: "fastidious",
+  meaning: "Giving careful attention to detail; hard to please",
+  correctness: false, // the user has not been tested on this word or the user fail to recall the meaning of this word during the test
+  sentence: "She was too fastidious to do anything that might get her dirty."//    example of how to use this word
+}
+```
+
+An Example Modules with embedded Vocabulary:
+
+```javascript
+{
+  portion: 50%, // the portion of times of recognizing words correctly during the test (the best one)
   user: // a reference to a User object
-  name: "Breakfast foods",
-  items: [
-    { name: "pancakes", quantity: "9876", checked: false},
-    { name: "ramen", quantity: "2", checked: true},
-  ],
-  createdAt: // timestamp
+  name: "Module 1",
+  vocabulary: [
+    {
+      word: "fastidious",
+      meaning: "Giving careful attention to detail; hard to please",
+      correctness: false,
+      sentence: "She was too fastidious to do anything that might get her dirty."
+    },
+    {
+      word: "Disingenuous",
+      meaning: "not candid or sincere",
+      correctness: true,
+      sentence: "But shamelessly self-interested and probably contrary to his real views on the EU though it is, the mayor’s move is perhaps not entirely disingenuous."
+    }
+  ]
 }
 ```
 
@@ -57,17 +70,29 @@ An Example List with Embedded Items:
 
 (___TODO__: wireframes for all of the pages on your site; they can be as simple as photos of drawings or you can use a tool like Balsamiq, Omnigraffle, etc._)
 
-/list/create - page for creating a new shopping list
+/gre - page for loging in
 
-![list create](documentation/list-create.png)
+![list create](documentation/1.jpg)
 
-/list - page for showing all shopping lists
+/gre - page for registering
 
-![list](documentation/list.png)
+![list](documentation/6.jpeg)
 
-/list/slug - page for showing specific shopping list
+/gre/lists - page for vocabulary list
 
-![list](documentation/list-slug.png)
+![list](documentation/2.jpg)
+
+/gre/quiz - page for quizzes
+
+![list](documentation/3.jpg)
+
+/gre/account - page for account management
+
+![list](documentation/4.jpg)
+
+/gre/lists - page for the dictionary
+
+![list](documentation/5.jpg)
 
 ## Site map
 
