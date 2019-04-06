@@ -62,7 +62,7 @@ An Example Modules with embedded Vocabulary:
 ```
 
 
-## [Link to Commented First Draft Schema](db.js) 
+## [Link to Commented First Draft Schema](src/db.js) 
 
 (___TODO__: create a first draft of your Schemas in db.js and link to it_)
 
@@ -76,7 +76,7 @@ An Example Modules with embedded Vocabulary:
 
 /gre/register - page for registering
 
-![list](documentation/2.jpeg)
+![list](documentation/2.jpg)
 
 /gre/lists - page for vocabulary list
 
