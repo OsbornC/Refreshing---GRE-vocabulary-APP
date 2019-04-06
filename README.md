@@ -74,25 +74,25 @@ An Example Modules with embedded Vocabulary:
 
 ![list create](documentation/1.jpg)
 
-/gre - page for registering
+/gre/register - page for registering
 
-![list](documentation/6.jpeg)
+![list](documentation/2.jpeg)
 
 /gre/lists - page for vocabulary list
 
-![list](documentation/2.jpg)
+![list](documentation/3.jpg)
 
 /gre/quiz - page for quizzes
 
-![list](documentation/3.jpg)
+![list](documentation/4.jpg)
 
 /gre/account - page for account management
 
-![list](documentation/4.jpg)
-
-/gre/lists - page for the dictionary
-
 ![list](documentation/5.jpg)
+
+/gre/dictionary - page for the dictionary
+
+![list](documentation/6.jpg)
 
 ## Site map
 

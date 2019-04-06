@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const User = new mongoose.Schema({
+  // username provided by authentication plugin
+  // password hash provided by authentication plugin
   lists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Modules' }]
 });
 
