@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 const passport = require('passport');
- 
+app.set('view engine', 'hbs')
 let dbconf;
 if (process.env.NODE_ENV === 'PRODUCTION') {
 	const fs = require('fs');
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 }
 
 app.use(express.urlencoded({ extended: false }));
-
+mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
