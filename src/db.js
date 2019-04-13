@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const User = new mongoose.Schema({
-  // username provided by authentication plugin
-  // password hash provided by authentication plugin
-  lists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Modules' }]
+  username: {type: String, required: true},
+  password: {type: String, required: true},
+  ts:[{type: mongoose.Schema.Types.ObjectId, ref: 'Modules'}]
 });
 
 const Vocabulary = new mongoose.Schema({
@@ -10,7 +10,7 @@ const Vocabulary = new mongoose.Schema({
   meaning: {type: String, required: true},
   correctness: {type: Boolean, default: false, required: true},
   sentence: {type: String, default: false, required: true}
-}, {
+  }, {
   _id: true
 });
 
@@ -20,3 +20,10 @@ const Modules = new mongoose.Schema({
   portion: {type: Number, required: true, default: 0, min: 0, max: 1},
   vocabulary: [Vocabulary]
 });
+
+mongoose.model('User', User);
+
+mongoose.model('Vocabulary', Vocabulary);
+
+mongoose.model('Modules', Modules);
+
