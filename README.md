@@ -106,9 +106,6 @@ An Example Modules with embedded Vocabulary:
 
 ## Research Topics
 
-* (5 points) Integrate user authentication
-    * I'm going to be using passport for user authentication
-    * And account has been made for testing; I'll include the password in the comments
 * (4 points) Perform client side form validation using a JavaScript library
     * if you look up a word that is not contained in the dictionary, an error message will appear in the dom
 * (5 points) vue.js
@@ -119,5 +116,4 @@ An Example Modules with embedded Vocabulary:
 
 ## Annotations / References Used
 
-1. [passport.js authentication docs](http://passportjs.org/docs)
 2. [tutorial on vue.js](https://vuejs.org/v2/guide/)
