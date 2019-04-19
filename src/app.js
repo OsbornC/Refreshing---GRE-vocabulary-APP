@@ -51,7 +51,7 @@ app.post('/dictionary', (req, res)=>{
 		if(err){
 			res.render('dictionary', {word: word, meaning: meaning});
 		}else{
-			res.redirect('/dictionary');
+			res.render('dictionary', {word: word, meaning: meaning})
 		}
 	});
 });
