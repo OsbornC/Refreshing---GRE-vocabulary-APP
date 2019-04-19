@@ -116,5 +116,4 @@ An Example Modules with embedded Vocabulary:
 
 ## Annotations / References Used
 
-1. [passport.js authentication docs](http://passportjs.org/docs)
 2. [tutorial on vue.js](https://vuejs.org/v2/guide/)
