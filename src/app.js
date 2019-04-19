@@ -6,18 +6,18 @@ const passport = require('passport');
 app.set('view engine', 'hbs');
 
 let dbconf;
-// if (process.env.NODE_ENV === 'PRODUCTION') {
+if (process.env.NODE_ENV === 'PRODUCTION') {
 	const fs = require('fs');
 	const path = require('path');
 	const fn = path.join(__dirname, 'config.json');
 	const data = fs.readFileSync(fn);
 
-// 	const conf = JSON.parse(data);
-// 	dbconf = conf.dbconf;
-// 	console.log(dbconf);
-// } else {
+	const conf = JSON.parse(data);
+	dbconf = conf.dbconf;
+	console.log(dbconf);
+} else {
 	dbconf = 'mongodb://localhost/jc7483';
-// }
+}
 app.use(express.urlencoded({ extended: false }));
 mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true);
