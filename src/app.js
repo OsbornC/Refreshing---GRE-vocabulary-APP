@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 	dbconf = 'mongodb://localhost/jc7483';
 }
 app.use(express.urlencoded({ extended: false }));
-mongoose.Promise = global.Promise;
+app.use(express.static(path.join(__dirname, "..", "public")));
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
@@ -42,28 +42,29 @@ app.post('/', (req, res)=>{
 app.post('/dictionary', (req, res)=>{
 	const word = req.body.word;
 	const meaning = req.body.meaning;
-	const vacab = new Vocabulary({
-		word: rating,
-		meaning: sanitize(req.body.name),
+	const vocab = new Vocabulary({
+		word: word,
+		meaning: meaning,
 		correctness: false
 	});
-	book.save((err) => {
+	vocab.save((err, foundVocab) => {
 		if(err){
-			res.render('dictionary', {word: word, meaning: meaning});
+			res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
 		}else{
-			res.render('dictionary', {word: word, meaning: meaning})
+			res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
 		}
 	});
 });
 
 app.get('/dictionary', (req, res)=>{
 	const word = req.query.word;
-	Vocabulary.find({word: word}, (err, foundBooks) => {
+	Vocabulary.findOne({word: word}, (err, foundVocab) => {
 		if (err){
-			console.log('Something Wrong!')
-		}else{
-			res.render('dictionary', {word: word, meaning: meaning});
-		}	
+			console.log('Something Wrong!');
+		}else {
+			console.log(foundVocab)
+			res.render('dictionary', {vocabulary: foundVocab});
+		}
 	});
 })
 

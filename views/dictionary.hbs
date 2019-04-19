@@ -1,24 +1,26 @@
 <h1>REFRESHING</h1>
-<ul>
+<ul class="topul">
 	<li>WORD LISTS</li>
 	<li>Quizzes</li>
 	<li>Account</li>
-	<li>Log Out</li>
+	<li><a href='dictionary'>Dictionary</a></li>
+	<li><a href='/'>Log Out</a></li>
 </ul>
 
 <h3>Look up a word!</h3>
-<form action="/" method="get">
+<form action="/dictionary" method="get">
 	<input type="text" name="word">
 	<input type="submit" name="enter">
 </form>
 
 <h3>Add a new word!</h3>
-<form action="/" method="post">
-	Word<input type="text" name="word">
-	Meaning<input type="text" name="meaning">
+<form action="/dictionary" method="post">
+	Word<input type="text" name="word"><br>
+	Meaning<input type="text" name="meaning"><br>
 	<input type="submit" name="enter">
 </form>
 
-{{word}}
+{{vocabulary.word}}<br>meaning: {{vocabulary.meaning}}
 
-Meaning: {{meaning}}
+{{word}}
+<br>{{breakAndMeaning}} {{meaning}}
