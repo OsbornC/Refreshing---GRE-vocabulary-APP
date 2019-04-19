@@ -9,7 +9,7 @@ const Vocabulary = new mongoose.Schema({
   word: {type: String, required: true},
   meaning: {type: String, required: true},
   correctness: {type: Boolean, default: false, required: true},
-  sentence: {type: String, default: false, required: true}
+  sentence: {type: String, default: false}
   }, {
   _id: true
 });

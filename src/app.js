@@ -3,21 +3,21 @@ const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 const passport = require('passport');
-app.set('view engine', 'hbs')
+app.set('view engine', 'hbs');
+
 let dbconf;
-if (process.env.NODE_ENV === 'PRODUCTION') {
+// if (process.env.NODE_ENV === 'PRODUCTION') {
 	const fs = require('fs');
 	const path = require('path');
 	const fn = path.join(__dirname, 'config.json');
 	const data = fs.readFileSync(fn);
 
-	const conf = JSON.parse(data);
-	dbconf = conf.dbconf;
-	console.log(dbconf);
-} else {
+// 	const conf = JSON.parse(data);
+// 	dbconf = conf.dbconf;
+// 	console.log(dbconf);
+// } else {
 	dbconf = 'mongodb://localhost/jc7483';
-}
-
+// }
 app.use(express.urlencoded({ extended: false }));
 mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true);
@@ -40,7 +40,31 @@ app.post('/', (req, res)=>{
 })
 
 app.post('/dictionary', (req, res)=>{
-	res.render('dictionary');
+	const word = req.body.word;
+	const meaning = req.body.meaning;
+	const vacab = new Vocabulary({
+		word: rating,
+		meaning: sanitize(req.body.name),
+		correctness: false
+	});
+	book.save((err) => {
+		if(err){
+			res.render('dictionary', {word: word, meaning: meaning});
+		}else{
+			res.redirect('/dictionary');
+		}
+	});
+});
+
+app.get('/dictionary', (req, res)=>{
+	const word = req.query.word;
+	Vocabulary.find({word: word}, (err, foundBooks) => {
+		if (err){
+			console.log('Something Wrong!')
+		}else{
+			res.render('dictionary', {word: word, meaning: meaning});
+		}	
+	});
 })
 
-app.listen(process.env.PORT || 3000);
+app.listen(3000);
