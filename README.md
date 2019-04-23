@@ -110,6 +110,8 @@ An Example Modules with embedded Vocabulary:
     * SASS
 * (5 points) vue.js
     * used vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 5 points
+* (3 points) WordsAPI
+    * used WordsAPI (the unirest module) for help building a dictionary for synonyms. Synonyms is a essential part for this APP as it helps for constructing the quizzes part.
 
 
 ## [Link to Initial Main Project File](src/app.js) 
