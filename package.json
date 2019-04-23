@@ -19,7 +19,12 @@
   "dependencies": {
     "mongoose": "^5.5.1",
     "mongoose-url-slugs": "^1.0.2",
+    "oxford-dictionary": "^1.4.1",
+    "oxford-dictionary-api": "^1.0.1",
     "passport": "^0.4.0",
+    "request-promise": "^4.2.4",
+    "synonymator": "0.0.1",
+    "unirest": "^0.6.0",
     "vue": "^2.6.10"
   }
 }

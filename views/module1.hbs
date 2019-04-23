@@ -1,0 +1,15 @@
+<form method="POST" action="quiz">
+	Choose the correct definition of each word!
+{{#each vocabulary as |v|}}
+<div>{{counter @index}}. {{word}} 
+	<br><input type="radio" id="{{word}}{{confusion.[0]}}" name="{{word}}" class="{{word}}" value="{{confusion.[0]}}">
+	<label for="{{word}}{{confusion.[0]}}">{{confusion.[0]}}</label><br>
+	<input type="radio" id="{{word}}{{confusion.[1]}}" name="{{word}}" class="{{word}}" value="{{confusion.[1]}}">
+	<label for="{{word}}{{confusion.[1]}}">{{confusion.[1]}}</label><br>
+	<input type="radio" id="{{word}}{{confusion.[2]}}" name="{{word}}" class="{{word}}" value="{{confusion.[2]}}">
+	<label for="{{word}}{{confusion.[2]}}">{{confusion.[2]}}</label><br>
+	<input type="hidden" name="{{word}}-hidden" class={{word}} value="{{meaning}}"><br>
+	</div>
+{{/each}}
+<input type="submit" name="submit">
+</form>

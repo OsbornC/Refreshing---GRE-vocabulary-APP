@@ -1,7 +1,7 @@
 <h1>REFRESHING</h1>
 <ul class="topul">
 	<li>WORD LISTS</li>
-	<li>Quizzes</li>
+	<li><a href='quiz'>Quizzes</a></li>
 	<li>Account</li>
 	<li><a href='dictionary'>Dictionary</a></li>
 	<li><a href='/'>Log Out</a></li>
@@ -20,7 +20,7 @@
 	<input type="submit" name="enter">
 </form>
 
-{{vocabulary.word}}<br>meaning: {{vocabulary.meaning}}
+{{vocabulary.word}}<br>{{vocabulary.meaning}}<br>{{vocabulary.synonyms}}
 
 {{word}}
-<br>{{breakAndMeaning}} {{meaning}}
+<br>{{breakAndMeaning}} {{meaning}} <br> {{synonyms}}
