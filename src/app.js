@@ -6,6 +6,7 @@ const path = require('path');
 const Handlebars = require('hbs');
 const bcrypt = require('bcryptjs');
 app.set('view engine', 'hbs');
+const sanitize = require('mongo-sanitize');
 
 let dbconf;
 if (process.env.NODE_ENV === 'PRODUCTION') {
@@ -40,6 +41,13 @@ Handlebars.registerHelper("counter", function (index){
 const Vocabulary = mongoose.model('Vocabulary');
 const User = mongoose.model('User');
 
+const checkRedirect = (req, res, next) => {
+	if (!req.session.user)
+		{res.redirect('login');}
+	else
+		{next();}
+};
+
 mongoose.connect(dbconf);
 
 app.get('/', (req, res)=>{
@@ -47,12 +55,12 @@ app.get('/', (req, res)=>{
 });
 
 app.get('/login', function(req, res){
-  res.render('login');
+	res.render('login');
 });
 
 app.post('/login', function(req, res){
-	const password = req.body.password;
-	User.findOne({username: req.body.username}, (err, user) => {
+	const password = sanitize(req.body.password);
+	User.findOne({username: sanitize(req.body.username)}, (err, user) => {
 		if(err){
 			console.log(err);
 		}
@@ -74,7 +82,7 @@ app.get('/register', function(req, res){
 });
 
 app.post('/register', function(req, res){
-	User.findOne({username: req.body.username}, (err, result) => {
+	User.findOne({username: sanitize(req.body.username)}, (err, result) => {
 		if(err){
 			console.log(err);
 		}
@@ -83,12 +91,12 @@ app.post('/register', function(req, res){
 			res.render('register', {userExists: exists});
 		}
 		else{
-			bcrypt.hash(req.body.password, 10, (err, hash) => {
+			bcrypt.hash(sanitize(req.body.password), 10, (err, hash) => {
 				if(err){
 					console.log(err);
 				}
 				new User({
-					username: req.body.username,
+					username: sanitize(req.body.username),
 					password: hash
 				}).save(err => {
 					if(err){
@@ -121,13 +129,9 @@ function shuffle(array) {
   return array;
 }
 
-app.post('/dictionary', (req, res)=>{
-	if (!req.session.user){
-		res.redirect('login');
-	}
-	else{
-	const word = req.body.word;
-	const meaning = req.body.meaning;
+app.post('/dictionary', checkRedirect, (req, res)=>{
+	const word = sanitize(req.body.word);
+	const meaning = sanitize(req.body.meaning);
 	const confusionList = [
 		'about to happen',
 		'unchangeable',
@@ -193,39 +197,30 @@ app.post('/dictionary', (req, res)=>{
 			});
 		}
 	});
-}
 });
 
-app.get('/dictionary', (req, res)=>{
-	if (!req.session.user)
-		{res.redirect('login');}
-	else{
-		const word = req.query.word;
-		Vocabulary.findOne({word: word}, (err, foundVocab) => {
-			if (err){
-				console.log('Something Wrong!');
-			}else {
-				res.render('dictionary', {vocabulary: foundVocab});
-			}
-		});
-	}
+app.get('/dictionary', checkRedirect, (req, res)=>{
+	const word = req.query.word;
+	Vocabulary.findOne({word: word}, (err, foundVocab) => {
+		if (err){
+			console.log('Something Wrong!');
+		}else {
+			res.render('dictionary', {vocabulary: foundVocab});
+		}
+	});
 
 });
 
-app.get('/quiz', (req, res)=>{
-	if (req.session.user){
-		Vocabulary.find().exec((err, result)=>{
-			const countCorrect = result.filter(ele => ele.correctness).length;
-			const total = result.length;
-			const accuracy = countCorrect / total * 100;
-			res.render('quiz', {score: 'Accuracy: ' + accuracy + '%'});
-		});		
-	}else{
-		res.render('login');
-	}
+app.get('/quiz', checkRedirect, (req, res)=>{
+	Vocabulary.find().exec((err, result)=>{
+		const countCorrect = result.filter(ele => ele.correctness).length;
+		const total = result.length;
+		const accuracy = countCorrect / total * 100;
+		res.render('quiz', {score: 'Accuracy: ' + accuracy + '%'});
+	});		
 });
 
-app.post('/quiz', (req, res)=>{
+app.post('/quiz', checkRedirect, (req, res)=>{
 	Vocabulary.find({}).exec((err, result) =>{
 		if (err){
 			console.log(err);
@@ -243,7 +238,7 @@ app.post('/quiz', (req, res)=>{
 						moduleID: 'module1'
 					}, {
 						correctness: true
-					}, function(err, result){
+					}, function(err){
 						if (err){
 							console.log(err);
 						}
@@ -257,18 +252,14 @@ app.post('/quiz', (req, res)=>{
 	});
 });	
 
-app.get('/module1', (req, res)=>{
-	if (!req.session.user){
-		res.redirect('login');
-	}else{
-		Vocabulary.find().exec((err, result) => {
-			if (err){
-				console.log('Something Wrong!');
-			}else{
-				res.render('module1', {vocabulary: result});
-			}
-		});
-	}
+app.get('/module1', checkRedirect, (req, res)=>{
+	Vocabulary.find().exec((err, result) => {
+		if (err){
+			console.log('Something Wrong!');
+		}else{
+			res.render('module1', {vocabulary: result});
+		}
+	});
 });
 
 app.get('/lists', (req, res)=>{
@@ -285,7 +276,7 @@ app.get('/lists', (req, res)=>{
 	});
 });
 
-app.get('/account', (req, res)=>{
+app.get('/account', checkRedirect, (req, res)=>{
 	Vocabulary.find({}, (err, result) => {
 		if (err){
 			console.log(err);
