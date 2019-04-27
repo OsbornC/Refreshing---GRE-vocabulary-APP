@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
 $colors: (
 	primary: #005dff,
 	accent: #fff6bb,
@@ -15,21 +16,31 @@ $shadow: 5px 5px 5px #eee;
 
 body, html {
 	height: 100%;
+	background-color: map-get($colors, primary);
+	font-family: 'Raleway', sans-serif;
 }
 
 body {
 	text-align: center;
 	margin: 0;
 	color: white;
-	#bg {
-		clip-path: polygon(0 0, 100% 1%, 100% 85%, 60% 100%, 0 100%);
-		background-color: map-get($colors, primary);
-		width: 100%;
-		z-index: 2;
-	}
+}
+
+h1 {
+	font-size: 3rem;
+	margin: 15px;
+}
+
+#container {
+    display: inline-block;
+    margin-top: 100px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.4);
+    font-size: 2em;
 }
 
 input[type="submit"], .btn-log {
+	font-size: 1em;
 	display: inline-block;
 	padding: $pad;
 	border-radius: $button-border-radius;
@@ -59,3 +70,4 @@ input[type="submit"], .btn-log {
 	}
 }
 
+ul{ list-style-type: none; }

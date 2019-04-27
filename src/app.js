@@ -37,7 +37,6 @@ Handlebars.registerHelper("counter", function (index){
     return index + 1;
 });
 
-const Modules = mongoose.model('Modules');
 const Vocabulary = mongoose.model('Vocabulary');
 const User = mongoose.model('User');
 
@@ -155,7 +154,7 @@ app.post('/dictionary', (req, res)=>{
 	}
 	confusion.push(req.body.meaning);
 
-	Vocabulary.count({}, function(err, c){
+	Vocabulary.countDocuments({}, function(err, c){
 		if (c < 15){
 			const voc = new Vocabulary({
 				word: word,
@@ -164,15 +163,6 @@ app.post('/dictionary', (req, res)=>{
 				moduleID: 'module1',
 				confusion: shuffle(confusion)
 			});
-			Modules.findOneAndUpdate(
-				{moduleID: 'module1'},
-				{$push: {vocabulary: voc}},   
-				{upsert: true },
-				function(err){
-					if (err)
-						{console.log(err);}
-				} 
-			);
 			voc.save((err) => {
 				if(err){
 					res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
@@ -193,15 +183,6 @@ app.post('/dictionary', (req, res)=>{
 					moduleID: 'module1',
 					confusion: pickedThree
 				});
-				Modules.findOneAndUpdate(
-					{moduleID: 'module1'},
-					{$push: {vocabulary: voc}},   
-					{upsert: true },
-					function(err){
-						if (err)
-							{console.log(err);}
-					}
-				);
 				voc.save((err) => {
 					if(err){
 						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
@@ -245,14 +226,14 @@ app.get('/quiz', (req, res)=>{
 });
 
 app.post('/quiz', (req, res)=>{
-	Modules.find({moduleID: 'module1'}).exec((err, result) =>{
+	Vocabulary.find({}).exec((err, result) =>{
 		if (err){
 			console.log(err);
 		}else{
 			let countTrue = 0;
 			const answers = new Object();
-			const quizWords = result[0].vocabulary.map(ele => ele.word);
-			const quizMeanings = result[0].vocabulary.map(ele => ele.meaning);
+			const quizWords = result.map(ele => ele.word);
+			const quizMeanings = result.map(ele => ele.meaning);
 			for (let i = 0; i < quizWords.length; i++){
 				answers[quizWords[i]] = quizMeanings[i];
 				if (quizMeanings[i] === req.body[quizWords[i]]){
@@ -265,8 +246,6 @@ app.post('/quiz', (req, res)=>{
 					}, function(err, result){
 						if (err){
 							console.log(err);
-						}else{
-							console.log(result);
 						}
 					});
 					countTrue += 1;
