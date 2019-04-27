@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const URLSlugs = require('mongoose-url-slugs');
 const bcrypt = require('bcryptjs');
 
 
@@ -36,4 +34,4 @@ mongoose.model('Modules', Modules);
 
 module.exports = {
     'db':'mongodb://localhost/jc7483'
-}
+};

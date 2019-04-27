@@ -52,29 +52,27 @@ app.get('/login', function(req, res){
 });
 
 app.post('/login', function(req, res){
-		const password = req.body.password;
-	    User.findOne({username: req.body.username}, (err, user) => {
-
-        if(err){
-            console.log(err);
-        }
-        else if(!err && user){
-        	if (user.validPassword(password)){
-        		req.session.user = user;
-        		res.redirect('dictionary');
-        	}else{
-        		res.render('login', {wrong: 'Password does not match'});
-        	}
-        }else{
-            res.render('login', {wrong: "USER NOT FOUND"});
-        }
-
-    });
+	const password = req.body.password;
+	User.findOne({username: req.body.username}, (err, user) => {
+		if(err){
+			console.log(err);
+		}
+		else if(!err && user){
+			if (user.validPassword(password)){
+				req.session.user = user;
+				res.redirect('dictionary');
+			}else{
+				res.render('login', {wrong: 'Password does not match'});
+			}
+		}else{
+			res.render('login', {wrong: "USER NOT FOUND"});
+		}
+	});
 });
 
 app.get('/register', function(req, res){
 	res.render('register');
-})
+});
 
 app.post('/register', function(req, res){
 	User.findOne({username: req.body.username}, (err, result) => {
@@ -83,7 +81,7 @@ app.post('/register', function(req, res){
 		}
 		else if(result){
 			const exists = "Username Already Exists!";
-			res.render('register', {userExists: exists})
+			res.render('register', {userExists: exists});
 		}
 		else{
 			bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -94,11 +92,11 @@ app.post('/register', function(req, res){
 					username: req.body.username,
 					password: hash
 				}).save(err => {
-				    if(err){
-				        console.log(err);
-				    }else{
-				    	res.redirect('login');
-				    }
+					if(err){
+						console.log(err);
+					}else{
+						res.redirect('login');
+					}
 				});
 			});
 		}
@@ -115,7 +113,7 @@ function sampleTwo(array) {
 	const first = array[Math.floor(Math.random() * array.length )];
 	let second = array[Math.floor(Math.random() * array.length )];
 	while (first === second)
-		second = array[Math.floor(Math.random() * array.length )];
+		{second = array[Math.floor(Math.random() * array.length )];}
 	return [first, second];
 }
 
@@ -148,12 +146,12 @@ app.post('/dictionary', (req, res)=>{
 		'wishy-washy, hesitant',
 		'taciturn, reserved, succinct'
 	];
-	let confusion = sampleTwo(confusionList);
+	const confusion = sampleTwo(confusionList);
 	while (confusion[0] === req.body.meaning || confusion[1] === req.body.meaning){
 		if (confusion[0] === req.body.meaning)
-			confusion[0] = array[Math.floor(Math.random() * confusionList.length )];
+			{confusion[0] = confusionList[Math.floor(Math.random() * confusionList.length )];}
 		else
-			confusion[1] = array[Math.floor(Math.random() * confusionList.length )];
+			{confusion[1] = confusionList[Math.floor(Math.random() * confusionList.length )];}
 	}
 	confusion.push(req.body.meaning);
 
@@ -172,10 +170,10 @@ app.post('/dictionary', (req, res)=>{
 				{upsert: true },
 				function(err){
 					if (err)
-						console.log(err);
+						{console.log(err);}
 				} 
 			);
-			voc.save((err, foundVocab) => {
+			voc.save((err) => {
 				if(err){
 					res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
 				}else{
@@ -183,31 +181,34 @@ app.post('/dictionary', (req, res)=>{
 				}
 			});
 		}else{
-			let pickedConfusion = result.map((ele)=>ele.meaning);
-			pickedConfusion.push(req.body.meaning);
-			console.log(shuffle(pickedConfusion));
-			const voc = new Vocabulary({
-				word: word,
-				meaning: meaning,
-				correctness: false,
-				moduleID: 'module1',
-				confusion: shuffle(pickedConfusion)
-			});
-			Modules.findOneAndUpdate(
-				{moduleID: 'module1'},
-				{$push: {vocabulary: voc}},   
-				{upsert: true },
-				function(err){
-					if (err)
-						console.log(err);
-				}
-			);
-			voc.save((err, foundVocab) => {
-				if(err){
-					res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
-				}else{
-					res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
-				}
+			Vocabulary.find({}, function(err, result){
+				const pickedConfusion = result.map((ele)=>ele.meaning);
+				const pickedTwo = sampleTwo(pickedConfusion);
+				let pickedThree = pickedTwo.push(req.body.meaning);
+				pickedThree = shuffle(pickedThree);
+				const voc = new Vocabulary({
+					word: word,
+					meaning: meaning,
+					correctness: false,
+					moduleID: 'module1',
+					confusion: pickedThree
+				});
+				Modules.findOneAndUpdate(
+					{moduleID: 'module1'},
+					{$push: {vocabulary: voc}},   
+					{upsert: true },
+					function(err){
+						if (err)
+							{console.log(err);}
+					}
+				);
+				voc.save((err) => {
+					if(err){
+						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
+					}else{
+						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
+					}
+				});
 			});
 		}
 	});
@@ -216,7 +217,7 @@ app.post('/dictionary', (req, res)=>{
 
 app.get('/dictionary', (req, res)=>{
 	if (!req.session.user)
-		res.redirect('login');
+		{res.redirect('login');}
 	else{
 		const word = req.query.word;
 		Vocabulary.findOne({word: word}, (err, foundVocab) => {
@@ -241,7 +242,7 @@ app.get('/quiz', (req, res)=>{
 	}else{
 		res.render('login');
 	}
-})
+});
 
 app.post('/quiz', (req, res)=>{
 	Modules.find({moduleID: 'module1'}).exec((err, result) =>{
@@ -265,7 +266,7 @@ app.post('/quiz', (req, res)=>{
 						if (err){
 							console.log(err);
 						}else{
-							console.log(result)
+							console.log(result);
 						}
 					});
 					countTrue += 1;
@@ -297,11 +298,29 @@ app.get('/lists', (req, res)=>{
 		const wordMeaning = [];
 		result.map(function(curr, index){
 			if (index !== result.length - 1)
-				wordMeaning.push(word[index] + ': ' + curr.meaning + 'SPLITSIGN');
+				{wordMeaning.push(word[index] + ': ' + curr.meaning + 'SPLITSIGN');}
 			else
-				wordMeaning.push(word[index] + ': ' + curr.meaning)
+				{wordMeaning.push(word[index] + ': ' + curr.meaning);}
 		});
-		res.render('lists', {voc: wordMeaning})
+		res.render('lists', {voc: wordMeaning});
+	});
+});
+
+app.get('/account', (req, res)=>{
+	Vocabulary.find({}, (err, result) => {
+		if (err){
+			console.log(err);
+		}else{
+			const countCorrect = result.filter(ele => ele.correctness).length;
+			const total = result.length;
+			const left = total - countCorrect;
+			let accuracy;
+			if (total === 0)
+				{accuracy = 'Not applicable. Please add some words into the dictionary.';}
+			else
+				{accuracy = countCorrect / total * 100 + '%';}
+			res.render('account', {countCorrect: countCorrect, left: left, accuracy: accuracy});
+		}
 	});
 });
 

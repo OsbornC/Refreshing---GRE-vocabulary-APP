@@ -9,10 +9,9 @@ body {
     clip-path: polygon(0 0, 100% 1%, 100% 85%, 60% 100%, 0 100%);
     background-color: #005dff;
     width: 100%;
-    /*height: 100%;*/
     z-index: 2; }
 
-input[type="submit"] {
+input[type="submit"], .btn-log {
   display: inline-block;
   padding: 8px 14px;
   border-radius: 5px;
