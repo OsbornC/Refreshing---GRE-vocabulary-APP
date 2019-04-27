@@ -1,13 +1,52 @@
 <h1>REFRESHING</h1>
 <ul class="topul">
-	<li>WORD LISTS</li>
+	<li><a href='lists'>WORD LISTS</a></li>
 	<li><a href='quiz'>Quizzes</a></li>
 	<li>Account</li>
 	<li><a href='dictionary'>Dictionary</a></li>
-	<li><a href='/'>Log Out</a></li>
+	<li><a href='/logout'>Log Out</a></li>
 </ul>
 
-
-
-<input type="button" name="previous">
-<input type="button" name="next">
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<div id = "app">
+ <p style = "font-size:25px;">\{{ counter }} </p>
+ <div v-if="startSeen">
+ <button @click = "start" style = "font-size:25px;">Start Learning</button></div>
+ <div v-if="seen">
+ <button @click = "minus" style = "font-size:25px;">Previous</button>
+ 
+ <button @click = "add" style = "font-size:25px;">Next</button>
+</div>
+</div>
+<script>
+ var vm = new Vue({
+    el: '#app',
+    data() {
+    	return {
+			counter: 'Click start learning to learn the vocabulary!',
+			array: "{{voc}}",
+			index: 0,
+			seen: false,
+			startSeen: true
+    	}
+    },
+    methods: {
+    	start: function() {
+    		this.array = this.array.split('SPLITSIGN,');
+    		this.counter = this.array[0];
+    		this.seen = true;
+    		this.startSeen = false;
+    	},
+    	add: function() {
+    		if (this.index < this.array.length-1 && this.index >= 0){
+    			this.counter = this.array[++this.index];
+    		}
+    	},
+    	minus: function() {
+    		if (this.index >= 1 && this.index < this.array.length){
+    			this.counter = this.array[--this.index];
+    		}
+    	}
+    }
+ })
+ </script>

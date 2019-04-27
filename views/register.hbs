@@ -1,4 +1,7 @@
-<form action="/" method="POST">
+<form action="/register" method="POST">
 	username<input type="text" name="username">
-	password<input type="text" name="password">
+	{{userExists}}
+	password<input type="password" name="password">
+	<input type="submit" name="submit">
+	<button><a href='login'>Back to login</a></button>
 </form>

@@ -17,7 +17,12 @@
   },
   "homepage": "https://github.com/nyu-csci-ua-0480-008-spring-2019/OsbornC-final-project#readme",
   "dependencies": {
+    "bcrypt": "^3.0.6",
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
+    "express-session": "^1.16.1",
     "fs": "0.0.1-security",
     "hbs": "^4.0.4",
     "mongoose": "^5.5.2",
@@ -25,13 +30,17 @@
     "oxford-dictionary": "^1.4.1",
     "oxford-dictionary-api": "^1.0.1",
     "passport": "^0.4.0",
-<<<<<<< HEAD
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
     "request-promise": "^4.2.4",
     "synonymator": "0.0.1",
     "unirest": "^0.6.0",
-=======
-    "path": "^0.12.7",
->>>>>>> b433aad0d39f282a0de39d3480415279e1abe201
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "webpack-cli": "^3.3.1"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "webpack": "^4.30.0",
+    "webpack-dev-server": "^3.3.1"
   }
 }

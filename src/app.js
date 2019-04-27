@@ -3,37 +3,35 @@ const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 const path = require('path');
-const passport = require('passport');
 const Handlebars = require('hbs');
+const bcrypt = require('bcryptjs');
 app.set('view engine', 'hbs');
-const path = require('path');
 
-// let dbconf;
-// if (process.env.NODE_ENV === 'PRODUCTION') {
+let dbconf;
+if (process.env.NODE_ENV === 'PRODUCTION') {
 	const fs = require('fs');
-<<<<<<< HEAD
-	
-=======
->>>>>>> b433aad0d39f282a0de39d3480415279e1abe201
 	const fn = path.join(__dirname, 'config.json');
 	const data = fs.readFileSync(fn);
 	const conf = JSON.parse(data);
 	dbconf = conf.dbconf;
 	console.log(dbconf);
-// } else {
+} else {
 	dbconf = 'mongodb://localhost/jc7483';
-<<<<<<< HEAD
-// }
-app.use(express.urlencoded({ extended: false }));
-=======
 }
->>>>>>> b433aad0d39f282a0de39d3480415279e1abe201
-app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.urlencoded({ extended: false }));
-//app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(express.static(path.join(__dirname, "..", "public")));
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
+
+app.use(require('cookie-parser')());
+app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('express-session')({
+  secret: 'secret for signing session id',
+  resave: true,
+  saveUninitialized: true
+}));
+
 
 Handlebars.registerHelper("counter", function (index){
     return index + 1;
@@ -46,13 +44,72 @@ const User = mongoose.model('User');
 mongoose.connect(dbconf);
 
 app.get('/', (req, res)=>{
-	res.render('login');
+	res.redirect('/login');
 });
 
-app.post('/', (req, res)=>{
-	const username = req.body.username;
-	const password = req.body.password;
+app.get('/login', function(req, res){
+  res.render('login');
 });
+
+app.post('/login', function(req, res){
+		const password = req.body.password;
+	    User.findOne({username: req.body.username}, (err, user) => {
+
+        if(err){
+            console.log(err);
+        }
+        else if(!err && user){
+        	if (user.validPassword(password)){
+        		req.session.user = user;
+        		res.redirect('dictionary');
+        	}else{
+        		res.render('login', {wrong: 'Password does not match'});
+        	}
+        }else{
+            res.render('login', {wrong: "USER NOT FOUND"});
+        }
+
+    });
+});
+
+app.get('/register', function(req, res){
+	res.render('register');
+})
+
+app.post('/register', function(req, res){
+	User.findOne({username: req.body.username}, (err, result) => {
+		if(err){
+			console.log(err);
+		}
+		else if(result){
+			const exists = "Username Already Exists!";
+			res.render('register', {userExists: exists})
+		}
+		else{
+			bcrypt.hash(req.body.password, 10, (err, hash) => {
+				if(err){
+					console.log(err);
+				}
+				new User({
+					username: req.body.username,
+					password: hash
+				}).save(err => {
+				    if(err){
+				        console.log(err);
+				    }else{
+				    	res.redirect('login');
+				    }
+				});
+			});
+		}
+	});
+});
+
+app.get('/logout', function(req, res){
+  req.session.destroy();
+  res.redirect('/login');
+});
+
 
 function sampleTwo(array) {
 	const first = array[Math.floor(Math.random() * array.length )];
@@ -68,6 +125,10 @@ function shuffle(array) {
 }
 
 app.post('/dictionary', (req, res)=>{
+	if (!req.session.user){
+		res.redirect('login');
+	}
+	else{
 	const word = req.body.word;
 	const meaning = req.body.meaning;
 	const confusionList = [
@@ -150,25 +211,38 @@ app.post('/dictionary', (req, res)=>{
 			});
 		}
 	});
+}
 });
 
 app.get('/dictionary', (req, res)=>{
-	const word = req.query.word;
-	Vocabulary.findOne({word: word}, (err, foundVocab) => {
-		if (err){
-			console.log('Something Wrong!');
-		}else {
-			console.log(foundVocab)
-			res.render('dictionary', {vocabulary: foundVocab});
-		}
-	});
+	if (!req.session.user)
+		res.redirect('login');
+	else{
+		const word = req.query.word;
+		Vocabulary.findOne({word: word}, (err, foundVocab) => {
+			if (err){
+				console.log('Something Wrong!');
+			}else {
+				res.render('dictionary', {vocabulary: foundVocab});
+			}
+		});
+	}
+
 });
 
 app.get('/quiz', (req, res)=>{
-	res.render('quiz');
+	if (req.session.user){
+		Vocabulary.find().exec((err, result)=>{
+			const countCorrect = result.filter(ele => ele.correctness).length;
+			const total = result.length;
+			const accuracy = countCorrect / total * 100;
+			res.render('quiz', {score: 'Accuracy: ' + accuracy + '%'});
+		});		
+	}else{
+		res.render('login');
+	}
 })
 
-<<<<<<< HEAD
 app.post('/quiz', (req, res)=>{
 	Modules.find({moduleID: 'module1'}).exec((err, result) =>{
 		if (err){
@@ -181,6 +255,19 @@ app.post('/quiz', (req, res)=>{
 			for (let i = 0; i < quizWords.length; i++){
 				answers[quizWords[i]] = quizMeanings[i];
 				if (quizMeanings[i] === req.body[quizWords[i]]){
+					Vocabulary.findOneAndUpdate({
+						word: quizWords[i], 
+						meaning: quizMeanings[i],
+						moduleID: 'module1'
+					}, {
+						correctness: true
+					}, function(err, result){
+						if (err){
+							console.log(err);
+						}else{
+							console.log(result)
+						}
+					});
 					countTrue += 1;
 				}
 			}
@@ -191,17 +278,32 @@ app.post('/quiz', (req, res)=>{
 });	
 
 app.get('/module1', (req, res)=>{
-	Vocabulary.find().exec((err, result) => {
-		if (err){
-			console.log('Something Wrong!');
-		}else{
-			res.render('module1', {vocabulary: result});
-		}
+	if (!req.session.user){
+		res.redirect('login');
+	}else{
+		Vocabulary.find().exec((err, result) => {
+			if (err){
+				console.log('Something Wrong!');
+			}else{
+				res.render('module1', {vocabulary: result});
+			}
+		});
+	}
+});
+
+app.get('/lists', (req, res)=>{
+	Vocabulary.find({}, (err, result) => {
+		const word = result.map(ele=>ele.word);
+		const wordMeaning = [];
+		result.map(function(curr, index){
+			if (index !== result.length - 1)
+				wordMeaning.push(word[index] + ': ' + curr.meaning + 'SPLITSIGN');
+			else
+				wordMeaning.push(word[index] + ': ' + curr.meaning)
+		});
+		res.render('lists', {voc: wordMeaning})
 	});
 });
 
-app.listen(3000);
-// app.listen(process.env.PORT || 3000);
-=======
+
 app.listen(process.env.PORT || 3000);
->>>>>>> b433aad0d39f282a0de39d3480415279e1abe201
