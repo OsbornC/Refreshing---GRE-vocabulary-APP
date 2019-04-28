@@ -167,13 +167,15 @@ app.post('/dictionary', checkRedirect, (req, res)=>{
 				moduleID: 'module1',
 				confusion: shuffle(confusion)
 			});
-			User.findOneAndUpdate({username: req.session.user.username}, {$push: {voc: voca._id}}, {upsert: true});
-			voca.save((err) => {
-				if(err){
-					res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
-				}else{
-					res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
-				}
+
+			User.findOneAndUpdate({username: req.session.user.username}, {$push: {voc: voca._id}}, {upsert: true}, ()=>{
+				voca.save((err) => {
+					if(err){
+						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
+					}else{
+						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
+					}
+				});
 			});
 		}else{
 			Vocabulary.find({}, function(err, result){
@@ -188,13 +190,14 @@ app.post('/dictionary', checkRedirect, (req, res)=>{
 					moduleID: 'module1',
 					confusion: pickedThree
 				});
-				User.findOneAndUpdate({username: req.session.user.username}, {$push: {voc: voca._id}}, {upsert: true});
-				voca.save((err) => {
-					if(err){
-						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
-					}else{
-						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
-					}
+				User.findOneAndUpdate({username: req.session.user.username}, {$push: {voc: voca._id}}, {upsert: true}, ()=>{
+					voca.save((err) => {
+						if(err){
+							res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
+						}else{
+							res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
+						}
+					});
 				});
 			});
 		}

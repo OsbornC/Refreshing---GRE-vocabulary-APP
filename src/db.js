@@ -27,7 +27,3 @@ mongoose.model('User', User);
 
 mongoose.model('Vocabulary', Vocabulary);
 
-
-module.exports = {
-    'db':'mongodb://localhost/jc7483'
-};
