@@ -1,11 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'), Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
 const mongooseUniqueValidator = require('mongoose-unique-validator');
 
 
 const User = new mongoose.Schema({
   username: {type: String, required: true},
-  password: {type: String, required: true}
+  password: {type: String, required: true},
+  voc: [{type: Schema.Types.ObjectId, ref: 'Vocabulary'}]
 });
 User.methods.validPassword = function( password ) {
     return bcrypt.compareSync(password, this.password);

@@ -67,7 +67,7 @@ app.post('/login', function(req, res){
 		else if(!err && user){
 			if (user.validPassword(password)){
 				req.session.user = user;
-				res.redirect('dictionary');
+				res.render('dictionary');
 			}else{
 				res.render('login', {wrong: 'Password does not match'});
 			}
@@ -111,8 +111,8 @@ app.post('/register', function(req, res){
 });
 
 app.get('/logout', function(req, res){
-  req.session.destroy();
-  res.redirect('/login');
+	req.session.destroy();
+	res.redirect('/login');
 });
 
 
@@ -160,14 +160,15 @@ app.post('/dictionary', checkRedirect, (req, res)=>{
 
 	Vocabulary.countDocuments({}, function(err, c){
 		if (c < 15){
-			const voc = new Vocabulary({
+			const voca = new Vocabulary({
 				word: word,
 				meaning: meaning,
 				correctness: false,
 				moduleID: 'module1',
 				confusion: shuffle(confusion)
 			});
-			voc.save((err) => {
+			User.findOneAndUpdate({username: req.session.user.username}, {$push: {voc: voca._id}}, {upsert: true});
+			voca.save((err) => {
 				if(err){
 					res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
 				}else{
@@ -180,14 +181,15 @@ app.post('/dictionary', checkRedirect, (req, res)=>{
 				const pickedTwo = sampleTwo(pickedConfusion);
 				let pickedThree = pickedTwo.push(req.body.meaning);
 				pickedThree = shuffle(pickedThree);
-				const voc = new Vocabulary({
+				const voca = new Vocabulary({
 					word: word,
 					meaning: meaning,
 					correctness: false,
 					moduleID: 'module1',
 					confusion: pickedThree
 				});
-				voc.save((err) => {
+				User.findOneAndUpdate({username: req.session.user.username}, {$push: {voc: voca._id}}, {upsert: true});
+				voca.save((err) => {
 					if(err){
 						res.render('dictionary', {word: word, meaning: meaning, breakAndMeaning: 'Meaning:'});
 					}else{
@@ -200,35 +202,41 @@ app.post('/dictionary', checkRedirect, (req, res)=>{
 });
 
 app.get('/dictionary', checkRedirect, (req, res)=>{
-	const word = req.query.word;
-	Vocabulary.findOne({word: word}, (err, foundVocab) => {
-		if (err){
-			console.log('Something Wrong!');
-		}else {
-			res.render('dictionary', {vocabulary: foundVocab});
-		}
+	User.findOne({username: req.session.user.username}).populate('voc').exec((err, result) => {
+		let fail = true;
+		let theWord;
+		result.voc.forEach(ele => {
+			if (ele.word === req.query.word){
+				fail = false;
+				theWord = ele;
+			}
+		});
+		if (fail)
+			res.render('dictionary');
+		else
+			res.render('dictionary', {vocabulary: theWord});
 	});
 
 });
 
 app.get('/quiz', checkRedirect, (req, res)=>{
-	Vocabulary.find().exec((err, result)=>{
-		const countCorrect = result.filter(ele => ele.correctness).length;
-		const total = result.length;
+	User.findOne({username: req.session.user.username}).populate('voc').exec((err, result) => {
+		const countCorrect = result.voc.filter(ele => ele.correctness).length;
+		const total = result.voc.length;
 		const accuracy = countCorrect / total * 100;
 		res.render('quiz', {score: 'Accuracy: ' + accuracy + '%'});
 	});		
 });
 
 app.post('/quiz', checkRedirect, (req, res)=>{
-	Vocabulary.find({}).exec((err, result) =>{
+	User.findOne({username: req.session.user.username}).populate('voc').exec((err, result) => {
 		if (err){
 			console.log(err);
 		}else{
 			let countTrue = 0;
 			const answers = new Object();
-			const quizWords = result.map(ele => ele.word);
-			const quizMeanings = result.map(ele => ele.meaning);
+			const quizWords = result.voc.map(ele => ele.word);
+			const quizMeanings = result.voc.map(ele => ele.meaning);
 			for (let i = 0; i < quizWords.length; i++){
 				answers[quizWords[i]] = quizMeanings[i];
 				if (quizMeanings[i] === req.body[quizWords[i]]){
@@ -253,21 +261,21 @@ app.post('/quiz', checkRedirect, (req, res)=>{
 });	
 
 app.get('/module1', checkRedirect, (req, res)=>{
-	Vocabulary.find().exec((err, result) => {
+	User.findOne({username: req.session.user.username}).populate('voc').exec((err, result) => {
 		if (err){
 			console.log('Something Wrong!');
 		}else{
-			res.render('module1', {vocabulary: result});
+			res.render('module1', {vocabulary: result.voc});
 		}
 	});
 });
 
 app.get('/lists', (req, res)=>{
-	Vocabulary.find({}, (err, result) => {
-		const word = result.map(ele=>ele.word);
+	User.findOne({username: req.session.user.username}).populate('voc').exec((err, result) => {
+		const word = result.voc.map(ele=>ele.word);
 		const wordMeaning = [];
-		result.map(function(curr, index){
-			if (index !== result.length - 1)
+		result.voc.map(function(curr, index){
+			if (index !== result.voc.length - 1)
 				{wordMeaning.push(word[index] + ': ' + curr.meaning + 'SPLITSIGN');}
 			else
 				{wordMeaning.push(word[index] + ': ' + curr.meaning);}
@@ -277,12 +285,12 @@ app.get('/lists', (req, res)=>{
 });
 
 app.get('/account', checkRedirect, (req, res)=>{
-	Vocabulary.find({}, (err, result) => {
+	User.findOne({username: req.session.user.username}).populate('voc').exec((err, result) => {
 		if (err){
 			console.log(err);
 		}else{
-			const countCorrect = result.filter(ele => ele.correctness).length;
-			const total = result.length;
+			const countCorrect = result.voc.filter(ele => ele.correctness).length;
+			const total = result.voc.length;
 			const left = total - countCorrect;
 			let accuracy;
 			if (total === 0)
@@ -293,6 +301,5 @@ app.get('/account', checkRedirect, (req, res)=>{
 		}
 	});
 });
-
 
 app.listen(process.env.PORT || 3000);
