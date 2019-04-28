@@ -212,9 +212,9 @@ app.get('/dictionary', checkRedirect, (req, res)=>{
 			}
 		});
 		if (fail)
-			res.render('dictionary');
+			{res.render('dictionary');}
 		else
-			res.render('dictionary', {vocabulary: theWord});
+			{res.render('dictionary', {vocabulary: theWord});}
 	});
 
 });
