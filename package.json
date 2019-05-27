@@ -38,7 +38,8 @@
     "synonymator": "0.0.1",
     "unirest": "^0.6.0",
     "vue": "^2.6.10",
-    "webpack-cli": "^3.3.1"
+    "webpack-cli": "^3.3.1",
+    "extend": ">=3.0.2"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
