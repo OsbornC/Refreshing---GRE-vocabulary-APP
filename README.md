@@ -76,25 +76,6 @@ An Example Vocabulary:
 6. as a user, I can add new words to the dictionary or look up a word in dictionary
 7. as a user, I can log out of the account to switch an account or re-login
 
-## Research Topics
-
-* (2 points) Use a CSS preprocesser
-    * SASS
-* (5 points) vue.js
-    * used vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 5 points
-* (1 points) bcryptjs
-    * used bcryptjs to hash the password for users.
-* (1 points) mongoose-unique-validator
-    * used mongoose-unique-validator to make the word in Vocabulary schema unique.
-
 ## [Link to Initial Main Project File](src/app.js) 
 
-## Annotations / References Used
 
-1. [tutorial on SASS](https://www.youtube.com/watch?v=roywYSEPSvc)
-
-2. [tutorial on vue.js](https://vuejs.org/v2/guide/)
-
-3. [documentation on bcrypt.js](https://www.npmjs.com/package/bcryptjs)
-
-4. [documentation on mongoose-unique-validator](https://www.npmjs.com/package/mongoose-unique-validator)
